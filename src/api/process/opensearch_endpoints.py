@@ -1,3 +1,4 @@
+from time import sleep
 from opensearchpy import OpenSearch
 from api.process.opensearch_body_setup import SearchBodySetup
 from myUtils import get_logger
@@ -22,6 +23,9 @@ class OpenSearchEndpoints:
         ssl_show_warn = False)
         
         self.search_setup = SearchBodySetup()
+        
+        self.max_tries = 5
+        self.tries = 0
     
     def set_payload(self,arg1,mins_before,opensearch_search_type):
         self.search_setup.set_time_range(mins_before=mins_before)
@@ -33,35 +37,42 @@ class OpenSearchEndpoints:
         return self.search_setup.get_search_body()
     
     def run_search(self,source='',filter=None,size=10):
-        if len(source) == 0 and filter is None:
-            response:dict = self.client.search(
-                index='fluent-bit*',
-                body=self.search_setup.search_body,
-                size=size
-            )
-        elif len(source) > 0 and filter is not None:
-            response:dict = self.client.search(
-                index='fluent-bit*',
-                body=self.search_setup.search_body,
-                filter_path=filter,
-                _source=[source],
-                size=size
-            )
-        elif filter is not None:
-            response:dict = self.client.search(
-                index='fluent-bit*',
-                body=self.search_setup.search_body,
-                filter_path=[*filter],
-                size=size
-            )
-        elif len(source) == 0:
-            response:dict = self.client.search(
-                index='fluent-bit*',
-                body=self.search_setup.search_body,
-                _source=[source],
-                size=size
-            )
-        return response
+        while self.tries < self.max_tries:
+            try:
+                if len(source) == 0 and filter is None:
+                    response:dict = self.client.search(
+                        index='fluent-bit*',
+                        body=self.search_setup.search_body,
+                        size=size
+                    )
+                elif len(source) > 0 and filter is not None:
+                    response:dict = self.client.search(
+                        index='fluent-bit*',
+                        body=self.search_setup.search_body,
+                        filter_path=filter,
+                        _source=[source],
+                        size=size
+                    )
+                elif filter is not None:
+                    response:dict = self.client.search(
+                        index='fluent-bit*',
+                        body=self.search_setup.search_body,
+                        filter_path=[*filter],
+                        size=size
+                    )
+                elif len(source) == 0:
+                    response:dict = self.client.search(
+                        index='fluent-bit*',
+                        body=self.search_setup.search_body,
+                        _source=[source],
+                        size=size
+                    )
+                return response
+            except Exception as e:
+                logger.info(f"Error: {e}. Retrying in 5 seconds...")
+                sleep(5)
+                self.tries += 1
+                logger.info(f'Failed to connect after {self.tries} retries.')
     
     # def confirm_match(self,entity_changes_list:list,last_applied_ver_id='',arg1=''):
     #     if last_applied_ver_id == '':
