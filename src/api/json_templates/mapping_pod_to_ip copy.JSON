@@ -1,0 +1,115 @@
+{
+"aggs": {
+    "6": {
+    "significant_terms": {
+        "field": "log_processed.publicIP.keyword",
+        "size": 50
+    },
+    "aggs": {
+        "8": {
+        "cardinality": {
+            "field": "kubernetes.pod_name.keyword"
+        }
+        },
+        "9": {
+        "terms": {
+            "field": "kubernetes.pod_name.keyword",
+            "order": {
+            "8": "desc"
+            },
+            "size": 50
+        },
+        "aggs": {
+            "8": {
+            "cardinality": {
+                "field": "kubernetes.pod_name.keyword"
+            }
+            }
+        }
+        }
+    }
+    }
+},
+"size": 0,
+"stored_fields": [
+    "*"
+],
+"script_fields": {},
+"docvalue_fields": [
+    {
+    "field": "@timestamp",
+    "format": "date_time"
+    },
+    {
+    "field": "kubernetes.annotations.kubectl_kubernetes_io/restartedAt",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.@timestamp",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.date",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.indices.CreationTime",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.last_update",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.startTime",
+    "format": "date_time"
+    },
+    {
+    "field": "log_processed.time",
+    "format": "date_time"
+    },
+    {
+    "field": "time",
+    "format": "date_time"
+    }
+],
+"_source": {
+    "excludes": []
+},
+"query": {
+    "bool": {
+    "must": [],
+    "filter": [
+        {
+            "multi_match": {
+                "type": "phrase",
+                "query": "Added jobId",
+                "lenient": true
+              }
+        },
+        {
+        "match_phrase": {
+            "kubernetes.pod_name": "\"service-connector-exchange-binance\""
+        }
+        },
+        {
+        "range": {
+            "@timestamp": {
+            "gte": "2023-04-23T13:03:38.567Z",
+            "lte": "2023-04-24T13:03:38.568Z",
+            "format": "strict_date_optional_time"
+            }
+        }
+        }
+    ],
+    "should": [],
+    "must_not": [
+        {
+        "match_phrase": {
+            "kubernetes.pod_name": "service-connector-exchange-binance-balance"
+        }
+        }
+    ]
+    }
+}
+}

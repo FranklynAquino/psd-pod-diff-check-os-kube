@@ -1,0 +1,122 @@
+{
+    "aggs": {
+        "4": {
+        "significant_terms": {
+            "field": "kubernetes.pod_name.keyword",
+            "size": 100
+        }
+        }
+    },
+    "size": 0,
+    "stored_fields": [
+        "*"
+    ],
+    "script_fields": {},
+    "docvalue_fields": [
+        {
+        "field": "@timestamp",
+        "format": "date_time"
+        },
+        {
+        "field": "kubernetes.annotations.kubectl_kubernetes_io/restartedAt",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.@timestamp",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.date",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.indices.CreationTime",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.last_update",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.startTime",
+        "format": "date_time"
+        },
+        {
+        "field": "log_processed.time",
+        "format": "date_time"
+        },
+        {
+        "field": "time",
+        "format": "date_time"
+        }
+    ],
+    "_source": {
+        "excludes": []
+    },
+    "query": {
+        "bool": {
+        "must": [],
+        "filter": [
+            {
+            "range": {
+                "@timestamp": {
+                "gte": "",
+                "lte": "",
+                "format": "date_hour_minute_second_millis"
+                }
+            }
+            },
+            {
+            "match_all": {}
+            },
+            {
+            "multi_match": {
+                "type": "phrase",
+                "query": "Added jobID",
+                "lenient": true
+            }
+            },
+            {
+            "bool": {
+                "should": [
+                {
+                    "match_phrase": {
+                    "kubernetes.pod_name": "service-connector-exchange-binance"
+                    }
+                },
+                {
+                    "match_phrase": {
+                    "kubernetes.pod_name": "service-connector-exchange-binance-balance"
+                    }
+                },
+                {
+                    "match_phrase": {
+                    "kubernetes.pod_name": "service-connector-blockchain"
+                    }
+                },
+                {
+                    "match_phrase": {
+                    "kubernetes.pod_name": "service-connector-exchange"
+                    }
+                },
+                {
+                    "match_phrase": {
+                    "kubernetes.pod_name": "service-connector-exchange-balance"
+                    }
+                }
+                ],
+                "minimum_should_match": 1
+            }
+            }
+        ],
+        "should": [],
+        "must_not": [
+            {
+            "match_phrase": {
+                "kubernetes.pod_name": "service-connector-exchange-binance-balance"
+            }
+            }
+        ]
+        }
+    }
+    }
