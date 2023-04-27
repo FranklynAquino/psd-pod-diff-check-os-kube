@@ -3,7 +3,7 @@
         "4": {
         "significant_terms": {
             "field": "kubernetes.pod_name.keyword",
-            "size": 100
+            "size": 500
         }
         }
     },
@@ -81,39 +81,11 @@
                 "should": [
                 {
                     "match_phrase": {
-                    "kubernetes.pod_name": "service-connector-exchange-binance"
-                    }
-                },
-                {
-                    "match_phrase": {
-                    "kubernetes.pod_name": "service-connector-exchange-binance-balance"
-                    }
-                },
-                {
-                    "match_phrase": {
-                    "kubernetes.pod_name": "service-connector-blockchain"
-                    }
-                },
-                {
-                    "match_phrase": {
-                    "kubernetes.pod_name": "service-connector-exchange"
-                    }
-                },
-                {
-                    "match_phrase": {
-                    "kubernetes.pod_name": "service-connector-exchange-balance"
+                    "kubernetes.pod_name": "service-connector"
                     }
                 }
                 ],
                 "minimum_should_match": 1
-            }
-            }
-        ],
-        "should": [],
-        "must_not": [
-            {
-            "match_phrase": {
-                "kubernetes.pod_name": "service-connector-exchange-binance-balance"
             }
             }
         ]
