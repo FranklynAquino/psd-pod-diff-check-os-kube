@@ -32,8 +32,4 @@ else
     diff -w ${date}_resultspy.csv ${date}_resultskube.csv
 fi
 
-#echo "Pods only in open search will begin with a '<' character"
-#echo "Pods only in k8s will begin with a '>' character"
-#echo "If no pod names are listed, both lists match!"
-#diff -w ${date}_resultspy.csv ${date}_resultskube.csv
     
