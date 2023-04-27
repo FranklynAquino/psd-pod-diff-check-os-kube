@@ -48,8 +48,8 @@ other_connector_pod_list = [bucket_object for bucket_object in bucket_object_lis
 
 for bucket_objects in binance_connector_pod_list:
     bucket_objects:OpenSearchResponseObject
-    logger.info(f'Soouth-East Binance pods: {bucket_objects.pod_name}')
+    print(f'{bucket_objects.pod_name}')
     
 for bucket_objects in other_connector_pod_list:
     bucket_objects:OpenSearchResponseObject
-    logger.info(f'Other pods: {bucket_objects.pod_name}')
+    print(f'{bucket_objects.pod_name}')
