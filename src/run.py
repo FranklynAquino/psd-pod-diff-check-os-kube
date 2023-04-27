@@ -1,4 +1,5 @@
 import subprocess
+from time import sleep
 import sys
 from myUtils import (env, get_logger)
 from api.process.opensearch_endpoints import OpenSearchEndpoints
@@ -6,6 +7,22 @@ from api.opensearch_response_object import OpenSearchResponseObject
 
 
 logger = get_logger('Main Run')
+
+def retry_request(instance:OpenSearchEndpoints=None):
+    max_tries = 5
+    tries = 0
+    while tries < max_tries:
+        try:
+            response = instance.run_search()
+            return response
+        except Exception as e:
+            print(f"Error: {e}. Retrying in 5 seconds...")
+            sleep(5)
+            tries += 1
+    logger.info(f'Failed to connect after {max_tries} retries.')
+    return None
+
+
 if len(sys.argv)  < 2:
     numHours = 24
 else:
@@ -19,7 +36,7 @@ opensearch_instance = OpenSearchEndpoints(host_name=env.opensearch_host_name,
 opensearch_instance.search_setup.set_time_range((numHours*60))
 
 #retry here
-results = opensearch_instance.run_search() 
+results = retry_request(opensearch_instance)
 
 #print(results)
 total_aggregations:dict = results['aggregations']
