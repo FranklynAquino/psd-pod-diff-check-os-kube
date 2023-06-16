@@ -7,13 +7,21 @@ date=`date +%Y%m%d`
 
 #Run python open search query
 echo "Running python query"
-python3 run.py $1 | sort -n > ${date}_resultspy.csv
+#Orig
+#python3 run.py $1 | sort -n > ${date}_resultspy.csv
+
+#Updated to consider balance pods
+python3 run.py $1 | sort -n | grep binance > ${date}_resultspy.csv
 countpy=`wc -l ${date}_resultspy.csv`
 echo "Found $countpy pods\n"
 
 #Run kubectl command to list pods
 echo "Running kubectl command"
-kubectl get pod -o=custom-columns=NAME:.metadata.name --all-namespaces | grep binance  | egrep -v "balance|overflow" | sort -n > ${date}_resultskube.csv
+#Orig
+#kubectl get pod -o=custom-columns=NAME:.metadata.name --all-namespaces | grep binance  | egrep -v "balance|overflow" | sort -n > ${date}_resultskube.csv
+#Updated to consider balance pods
+kubectx atlas-aps1-prod-1
+kubectl get pod -o=custom-columns=NAME:.metadata.name --all-namespaces | grep binance  | egrep -v "overflow" | sort -n > ${date}_resultskube.csv
 countkube=`wc -l ${date}_resultskube.csv`
 echo "Found $countkube pods\n"
 
